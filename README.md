@@ -21,5 +21,5 @@ The network is built using standard C structs, optimizing memory management and 
 
 To compile the code, you need to link the math library (`-lm`) because of the use of exponential and square root functions during weight initialization and backpropagation:
 ```bash
-gcc -o c-mlp-framework main.c -lm
-./c-mlp-framework
+gcc -o mlp-framework.c -lm
+./mlp-framework
