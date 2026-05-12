@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
-#include <time.h> // Necessari per a srand()
+#include <time.h>
 #include <string.h>
 #define MAX_INPUTS 100
 #define MAX_OUTPUTS 100
@@ -196,110 +196,6 @@ void train(Network* net, float inputs[][MAX_INPUTS], float outputs[][MAX_OUTPUTS
     }
 }
 
- /*int main(){
-    srand(time(NULL));
-
-    // Dades XOR
-    float inputs[4][MAX_INPUTS] = {{0, 0}, {0, 1}, {1, 0}, {1, 1}};
-    float targets[4][MAX_OUTPUTS] = {{0}, {1}, {1}, {0}};
-
-    Network net;
-
-    printf("Inicialitzant xarxa...\n");
-    // 2 capes de neurones (1 oculta + 1 sortida), 4 ocultes, 2 inputs, 1 output
-    initialize_network(&net, 2, 6, 2, 1);
-
-    printf("Començant entrenament...\n");
-    train(&net, inputs, targets, 4, 30000, 1);
-
-    printf("\n--- RESULTATS FINALS ---\n");
-    for (int i = 0; i < 4; i++)
-    {
-        forward_Network(&net, inputs[i]);
-        float sortida = net.layers[net.layer_count - 1].outputs_cache[0];
-        printf("Input [%.0f, %.0f] -> Xarxa: %.4f (Esperat: %.0f)\n",
-               inputs[i][0], inputs[i][1], sortida, targets[i][0]);
-    }
-
-    return 0;
-}*/
-
-
-/*int main() {
-    srand(time(NULL)); 
-
-    // --- 1. DADES D'ENTRENAMENT (NORMALITZADES) ---
-    // Inputs: { Habitacions/5, Metres/200, Zona/5 }
-    // Outputs: { Preu/500.000 }
-    
-    // Exemple 1: Apartament petit i barat (1 hab, 40m2, Zona 2) -> 80.000€
-    // Exemple 2: Pis estàndard (3 hab, 90m2, Zona 3) -> 220.000€
-    // Exemple 3: Casa gran (4 hab, 150m2, Zona 4) -> 380.000€
-    // Exemple 4: Luxe (5 hab, 180m2, Zona 5) -> 480.000€
-    // Exemple 5: Cau (1 hab, 30m2, Zona 1) -> 50.000€
-
-    float inputs[5][MAX_INPUTS] = {
-        {0.20, 0.20, 0.40}, // 1/5, 40/200, 2/5
-        {0.60, 0.45, 0.60}, // 3/5, 90/200, 3/5
-        {0.80, 0.75, 0.80}, // 4/5, 150/200, 4/5
-        {1.00, 0.90, 1.00}, // 5/5, 180/200, 5/5
-        {0.20, 0.15, 0.20}  // 1/5, 30/200, 1/5
-    };
-
-    float targets[5][MAX_OUTPUTS] = {
-        {0.16}, // 80k / 500k
-        {0.44}, // 220k / 500k
-        {0.76}, // 380k / 500k
-        {0.96}, // 480k / 500k
-        {0.10}  // 50k / 500k
-    };
-
-    Network net;
-    
-    // --- 2. CONFIGURACIÓ DE LA XARXA ---
-    // 3 Inputs (Hab, m2, Zona)
-    // 6 Neurones Ocultes (Per donar-li potència)
-    // 1 Output (Preu)
-    printf("Inicialitzant xarxa immobiliaria...\n");
-    initialize_network(&net, 3, 6, 3, 1);
-
-    // --- 3. ENTRENAMENT ---
-    // Les dades reals costen més d'aprendre que l'XOR. Posem bastantes èpoques.
-    printf("Aprenent el mercat immobiliari (30.000 époques)...\n");
-    train(&net, inputs, targets, 5, 30000, 1); 
-
-    // --- 4. VALIDACIÓ DE DADES CONEGUDES ---
-    printf("\n--- COMPROVACIÓ APRENENTATGE ---\n");
-    for(int i=0; i<5; i++){
-        forward_Network(&net, inputs[i]);
-        float resultat = net.layers[net.layer_count-1].outputs_cache[0];
-        
-        // Des-normalitzem per mostrar Euros
-        printf("Pis %d -> Prediccio: %.0f Euros (Real: %.0f)\n", 
-               i+1, resultat * 500000, targets[i][0] * 500000);
-    }
-
-    // --- 5. LA MÀGIA: PREDIR UN PIS NOU QUE NO HA VIST MAI ---
-    printf("\n--- PREDICCIÓ PIS NOU (NOU CAS) ---\n");
-    
-    // Cas inventat: Pis de 3 habitacions, 110m2, Zona 4 (Bastant bo)
-    // Esperem un preu entre 220k i 380k, potser uns 300k?
-    float hab = 3.0;
-    float m2 = 110.0;
-    float zona = 4.0;
-
-    float new_input[3] = { hab/5.0, m2/200.0, zona/5.0 }; // Normalitzem
-    
-    forward_Network(&net, new_input);
-    float output_nou = net.layers[net.layer_count-1].outputs_cache[0];
-    
-    printf("Caracteristiques: %.0f hab, %.0f m2, Zona %.0f\n", hab, m2, zona);
-    printf("VALOR ESTIMAT PER LA IA: %.2f Euros\n", output_nou * 500000);
-
-    return 0;
-} */
-
-
 void normalization(float normal[], float input[][MAX_INPUTS], int input_data, int data_size){
     for(int i=0; i<data_size; i++){
         for(int j=0; j<input_data;j++){
@@ -311,7 +207,7 @@ void read(float inputs[][MAX_INPUTS], float outputs[][MAX_INPUTS], int *samples_
     char filename[MAX_LETTERS];
     printf("File name: ");
     scanf("%s", filename);
-    printf("Opening: [%s]\n", filename); // Diagnòstic
+    printf("Opening: [%s]\n", filename);
     FILE *fp = fopen(filename, "r");
     if(fp == NULL){
         printf("File doesn't exist!");
@@ -423,7 +319,7 @@ Network read_network(){
 
 void try_model(Network* net){
     if (net->layer_count == 0) {
-        printf("Error: No hi ha cap xarxa carregada o entrenada.\n");
+        printf("Error: No network loaded or trained.\n");
         return;
     }
 
@@ -435,24 +331,24 @@ void try_model(Network* net){
     float user_input[MAX_INPUTS];
     int continue_testing = 1;
 
-    printf("\n--- CONFIGURACIO DE PREDICCIO ---\n");
-    printf("La xarxa treballa amb valors normalitzats.\n");
-    printf("Introdueix els divisors per als %d inputs (els que hi ha al fitxer de dades):\n", n_inputs);
+    printf("\n--- PREDICTION SETUP ---\n");
+    printf("The network works with normalized values.\n");
+    printf("Enter the divisors for the %d inputs (the ones in the data file):\n", n_inputs);
     for(int i = 0; i < n_inputs; i++){
-        printf("Maxim per input %d: ", i+1);
+        printf("Max for input %d: ", i+1);
         scanf("%f", &norm_inputs[i]);
     }
 
-    printf("Introdueix els multiplicadors per als %d outputs (els que hi ha al fitxer de dades):\n", n_outputs);
+    printf("Enter the multipliers for the %d outputs (the ones in the data file):\n", n_outputs);
     for(int i = 0; i < n_outputs; i++){
-        printf("Maxim per output %d: ", i+1);
+        printf("Max for output %d: ", i+1);
         scanf("%f", &norm_outputs[i]);
     }
 
     // Bucle per provar diferents valors sense sortir
     while(continue_testing){
-        printf("\n--- NOVA PREDICCIO ---\n");
-        printf("Introdueix els valors reals d'entrada:\n");
+        printf("\n--- NEW PREDICTION ---\n");
+        printf("Enter the real input values:\n");
         
         for(int i = 0; i < n_inputs; i++){
             float raw_val;
@@ -467,14 +363,14 @@ void try_model(Network* net){
 
         // Mostrem resultats
         Layer* output_layer = &net->layers[net->layer_count - 1];
-        printf("\n--- RESULTATS ---\n");
+        printf("\n--- RESULTS ---\n");
         for(int i = 0; i < n_outputs; i++){
             float raw_out = output_layer->outputs_cache[i];
             float real_val = raw_out * norm_outputs[i]; // Des-normalitzem
-            printf("Output %d: %.4f (Valor Real aprox: %.2f)\n", i+1, raw_out, real_val);
+            printf("Output %d: %.4f (Approx. real value: %.2f)\n", i+1, raw_out, real_val);
         }
 
-        printf("\nVols provar un altre cas? (1: Si, 0: No): ");
+        printf("\nDo you want to test another case (1: Yes, 0: No): ");
         scanf("%d", &continue_testing);
     }
 }
@@ -486,7 +382,7 @@ void menu(Network *net){
         printf("\n Pick a option: ");
         if (scanf("%d", &option) != 1) {
             while (getchar() != '\n');
-            printf("Error: Introdueix un numero valid.\n");
+            printf("Error: Please enter a valid number.\n");
             continue;
         }
         if(option == 1){
@@ -518,56 +414,6 @@ void menu(Network *net){
     }
     
 }
-
-
-
-/*int main(){
-    srand(time(NULL));
-    float inputs[MAX_DATA][MAX_INPUTS], outputs[MAX_DATA][MAX_INPUTS];
-    int inputs_count, outputs_count, data_size;
-    read(inputs, outputs, &data_size,&inputs_count,&outputs_count);
-    Network net;
-    int layer_count, neuron_count, epochs;
-    printf("Number of layers wished:");
-    scanf("%d", &layer_count);
-    printf("Number of neurons wished:");
-    scanf("%d", &neuron_count);
-    printf("Epochs:");
-    scanf("%d", &epochs);
-    initialize_network(&net, layer_count, neuron_count, inputs_count, outputs_count);
-    printf("Training...");
-    train(&net, inputs, outputs, data_size, epochs,outputs_count);
-    printf("Model trained");
-    // --- BLOC DE PROVA DE PREDICCIÓ ---
-    printf("\n--- TEST DE PREDICCIO ---\n");
-    float test_input[MAX_INPUTS];
-    
-    // Exemple per al fitxer de pisos (3 inputs: m2, hab, anys)
-    // Suposem que volem predir un pis de 100m2, 3 hab, 5 anys d'antiguitat
-    // ATENCIÓ: Els valors han de passar per la mateixa normalització que el fitxer!
-    
-    float m2 = 100.0, hab = 3.0, anys = 5.0;
-    
-    // Usem els valors de normalització que coneixem del fitxer
-    test_input[0] = m2 / 250.0; 
-    test_input[1] = hab / 6.0;
-    test_input[2] = anys / 100.0;
-
-    // Executem la xarxa amb aquest input
-    forward_Network(&net, test_input);
-
-    // Agafem el resultat de la capa de sortida
-    float prediccio_normalitzada = net.layers[net.layer_count - 1].outputs_cache[0];
-    
-    // Des-normalitzem per veure el preu real (el preu max era 600.000)
-    float preu_final = prediccio_normalitzada * 800000.0;
-
-    printf("Entrada: %.0f m2, %.0f hab, %.0f anys\n", m2, hab, anys);
-    printf("Prediccio de la IA: %.2f Euros\n", preu_final);
-    save(net);
-    return 0;
-    
-} */
 
 int main(){
     Network net;
